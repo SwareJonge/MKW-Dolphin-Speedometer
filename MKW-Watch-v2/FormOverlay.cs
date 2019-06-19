@@ -7,6 +7,7 @@ using MKW_Watch_v2.Utils;
 using System.Linq;
 using System.IO;
 using System.Text;
+using MKW_Watch_v2;
 
 namespace MKW_Watch_v2
 {
@@ -28,16 +29,18 @@ namespace MKW_Watch_v2
 
             SetStyle(ControlStyles.SupportsTransparentBackColor, true);
             TransparencyKey = BackColor;
-
+            
         }
 
-
+        
         ProcessMemoryReader mreader = new ProcessMemoryReader();
 
         int bytesOut = 0;
 
         public void FormOverlay_Load_1(object sender, EventArgs e)
         {
+
+            
             TopMost = true;
 
             Timer timer1 = new Timer();
@@ -214,10 +217,8 @@ namespace MKW_Watch_v2
             int initialStyle = GetWindowLong(Handle, -20);
             SetWindowLong(Handle, -20, initialStyle | 0x80000 | 0x20);
 
-            numBox3.Visible = true;
-            numBox2.Visible = true;
-            numBox1.Visible = true;
 
+            // Calculations For locations, width and height of image
             int screenX4 = (int)Math.Round(screenX * 0.87);
             int screenY4 = (int)Math.Round(screenY * 0.869);
 
@@ -346,156 +347,216 @@ namespace MKW_Watch_v2
 
             if (checkIfInRace == true)
             {
-                airTextureBox1.Visible = true;
-                boostTextureBox1.Visible = true;
-                mtTextureBox1.Visible = true;
-                kmhBox1.Visible = true;
-
-                if (Air >= 3)
+                if (Form1.CheckedAirChangedStatus == true)
                 {
-                    airBox3.Visible = true;
-                    airBox2.Visible = true;
-                    airBox1.Visible = true;
-                    airBox3.Image = Image.FromFile(numFolderPath + "\\" + arrayAir[0].ToString() + ".png");
-                    airBox2.Image = Image.FromFile(numFolderPath + "\\" + arrayAir[1].ToString() + ".png");
-                    airBox1.Image = Image.FromFile(numFolderPath + "\\" + arrayAir[2].ToString() + ".png");
+                    airTextureBox1.Visible = true;
+                    if (Air >= 3)
+                    {
+                        airBox3.Visible = true;
+                        airBox2.Visible = true;
+                        airBox1.Visible = true;
+                        airBox3.Image = Image.FromFile(numFolderPath + "\\" + arrayAir[0].ToString() + ".png");
+                        airBox2.Image = Image.FromFile(numFolderPath + "\\" + arrayAir[1].ToString() + ".png");
+                        airBox1.Image = Image.FromFile(numFolderPath + "\\" + arrayAir[2].ToString() + ".png");
+                    }
+                    else if (Air >= 2)
+                    {
+                        airBox3.Visible = false;
+                        airBox2.Visible = true;
+                        airBox1.Visible = true;
+                        airBox2.Image = Image.FromFile(numFolderPath + "\\" + arrayAir[0].ToString() + ".png");
+                        airBox1.Image = Image.FromFile(numFolderPath + "\\" + arrayAir[1].ToString() + ".png");
+                    }
+                    else if (Air >= 1)
+                    {
+                        airBox3.Visible = false;
+                        airBox2.Visible = false;
+                        airBox1.Visible = true;
+                        airBox1.Image = Image.FromFile(this.numFolderPath + "\\" + arrayAir[0].ToString() + ".png");
+                    }
                 }
-                else if (Air >= 2)
+                else
                 {
-                    airBox3.Visible = false;
-                    airBox2.Visible = true;
-                    airBox1.Visible = true;
-                    airBox2.Image = Image.FromFile(numFolderPath + "\\" + arrayAir[0].ToString() + ".png");
-                    airBox1.Image = Image.FromFile(numFolderPath + "\\" + arrayAir[1].ToString() + ".png");
-                }
-                else if (Air >= 1)
-                {
+                    airTextureBox1.Visible = false;
                     airBox3.Visible = false;
                     airBox2.Visible = false;
-                    airBox1.Visible = true;
-                    airBox1.Image = Image.FromFile(this.numFolderPath + "\\" + arrayAir[0].ToString() + ".png");
+                    airBox1.Visible = false;
                 }
 
-                if (MT >= 3)
+                if (Form1.CheckedMTChangedStatus == true)
                 {
-                    mtBox3.Visible = true;
-                    mtBox2.Visible = true;
-                    mtBox1.Visible = true;
-                    mtBox3.Image = Image.FromFile(numFolderPath + "\\" + arrayAll_MT[0].ToString() + ".png");
-                    mtBox2.Image = Image.FromFile(numFolderPath + "\\" + arrayAll_MT[1].ToString() + ".png");
-                    mtBox1.Image = Image.FromFile(numFolderPath + "\\" + arrayAll_MT[2].ToString() + ".png");
+                    mtTextureBox1.Visible = true;
+                    if (MT >= 3)
+                    {
+                        mtBox3.Visible = true;
+                        mtBox2.Visible = true;
+                        mtBox1.Visible = true;
+                        mtBox3.Image = Image.FromFile(numFolderPath + "\\" + arrayAll_MT[0].ToString() + ".png");
+                        mtBox2.Image = Image.FromFile(numFolderPath + "\\" + arrayAll_MT[1].ToString() + ".png");
+                        mtBox1.Image = Image.FromFile(numFolderPath + "\\" + arrayAll_MT[2].ToString() + ".png");
+                    }
+                    else if (MT >= 2)
+                    {
+                        mtBox3.Visible = false;
+                        mtBox2.Visible = true;
+                        mtBox1.Visible = true;
+                        mtBox2.Image = Image.FromFile(numFolderPath + "\\" + arrayAll_MT[0].ToString() + ".png");
+                        mtBox1.Image = Image.FromFile(numFolderPath + "\\" + arrayAll_MT[1].ToString() + ".png");
+                    }
+                    else if (MT >= 1)
+                    {
+                        mtBox3.Visible = false;
+                        mtBox2.Visible = false;
+                        mtBox1.Visible = true;
+                        mtBox1.Image = Image.FromFile(this.numFolderPath + "\\" + arrayAll_MT[0].ToString() + ".png");
+                    }
                 }
-                else if (MT >= 2)
+                else
                 {
-                    mtBox3.Visible = false;
-                    mtBox2.Visible = true;
-                    mtBox1.Visible = true;
-                    mtBox2.Image = Image.FromFile(numFolderPath + "\\" + arrayAll_MT[0].ToString() + ".png");
-                    mtBox1.Image = Image.FromFile(numFolderPath + "\\" + arrayAll_MT[1].ToString() + ".png");
-                }
-                else if (MT >= 1)
-                {
+                    mtTextureBox1.Visible = false;
                     mtBox3.Visible = false;
                     mtBox2.Visible = false;
-                    mtBox1.Visible = true;
-                    mtBox1.Image = Image.FromFile(this.numFolderPath + "\\" + arrayAll_MT[0].ToString() + ".png");
+                    mtBox1.Visible = false;
                 }
 
-                if (BoostArrayLength >= 3)
+                if (Form1.CheckedBstChangedStatus == true)
                 {
-                    boostBox3.Visible = true;
-                    boostBox2.Visible = true;
-                    boostBox1.Visible = true;
-                    boostBox3.Image = Image.FromFile(numFolderPath + "\\" + arrayAll_Boost[0].ToString() + ".png");
-                    boostBox2.Image = Image.FromFile(numFolderPath + "\\" + arrayAll_Boost[1].ToString() + ".png");
-                    boostBox1.Image = Image.FromFile(numFolderPath + "\\" + arrayAll_Boost[2].ToString() + ".png");
+                    boostTextureBox1.Visible = true;
+                    if (BoostArrayLength >= 3)
+                    {
+                        boostBox3.Visible = true;
+                        boostBox2.Visible = true;
+                        boostBox1.Visible = true;
+                        boostBox3.Image = Image.FromFile(numFolderPath + "\\" + arrayAll_Boost[0].ToString() + ".png");
+                        boostBox2.Image = Image.FromFile(numFolderPath + "\\" + arrayAll_Boost[1].ToString() + ".png");
+                        boostBox1.Image = Image.FromFile(numFolderPath + "\\" + arrayAll_Boost[2].ToString() + ".png");
+                    }
+                    else if (BoostArrayLength >= 2)
+                    {
+                        boostBox3.Visible = false;
+                        boostBox2.Visible = true;
+                        boostBox1.Visible = true;
+                        boostBox2.Image = Image.FromFile(numFolderPath + "\\" + arrayAll_Boost[0].ToString() + ".png");
+                        boostBox1.Image = Image.FromFile(numFolderPath + "\\" + arrayAll_Boost[1].ToString() + ".png");
+                    }
+                    else if (BoostArrayLength >= 1)
+                    {
+                        boostBox3.Visible = false;
+                        boostBox2.Visible = false;
+                        boostBox1.Visible = true;
+                        boostBox1.Image = Image.FromFile(this.numFolderPath + "\\" + arrayAll_Boost[0].ToString() + ".png");
+                    }
                 }
-                else if (BoostArrayLength >= 2)
+                else
                 {
-                    boostBox3.Visible = false;
-                    boostBox2.Visible = true;
-                    boostBox1.Visible = true;
-                    boostBox2.Image = Image.FromFile(numFolderPath + "\\" + arrayAll_Boost[0].ToString() + ".png");
-                    boostBox1.Image = Image.FromFile(numFolderPath + "\\" + arrayAll_Boost[1].ToString() + ".png");
-                }
-                else if (BoostArrayLength >= 1)
-                {
+                    boostTextureBox1.Visible = false;
                     boostBox3.Visible = false;
                     boostBox2.Visible = false;
-                    boostBox1.Visible = true;
-                    boostBox1.Image = Image.FromFile(this.numFolderPath + "\\" + arrayAll_Boost[0].ToString() + ".png");
+                    boostBox1.Visible = false;
                 }
-                if (num4 >= 3)
-                {
-                    numBox3.Visible = true;
-                    numBox2.Visible = true;
-                    numBox3.Image = Image.FromFile(numFolderPath + "\\" + array[0].ToString() + ".png");
-                    numBox2.Image = Image.FromFile(numFolderPath + "\\" + array[1].ToString() + ".png");
-                    numBox1.Image = Image.FromFile(numFolderPath + "\\" + array[2].ToString() + ".png");
 
-                }
-                else if (num4 >= 2)
+                if (Form1.CheckBox1Status == true)
                 {
-                    numBox3.Visible = false;
-                    numBox2.Visible = true;
-                    numBox2.Image = Image.FromFile(numFolderPath + "\\" + array[0].ToString() + ".png");
-                    numBox1.Image = Image.FromFile(numFolderPath + "\\" + array[1].ToString() + ".png");
+                    kmhBox1.Visible = true;
+                    if (num4 >= 3)
+                    {
+                        numBox3.Visible = true;
+                        numBox2.Visible = true;
+                        numBox1.Visible = true;
+                        numBox3.Image = Image.FromFile(numFolderPath + "\\" + array[0].ToString() + ".png");
+                        numBox2.Image = Image.FromFile(numFolderPath + "\\" + array[1].ToString() + ".png");
+                        numBox1.Image = Image.FromFile(numFolderPath + "\\" + array[2].ToString() + ".png");
+
+                    }
+                    else if (num4 >= 2)
+                    {
+                        numBox3.Visible = false;
+                        numBox2.Visible = true;
+                        numBox1.Visible = true;
+                        numBox2.Image = Image.FromFile(numFolderPath + "\\" + array[0].ToString() + ".png");
+                        numBox1.Image = Image.FromFile(numFolderPath + "\\" + array[1].ToString() + ".png");
+                    }
+                    else if (num4 >= 1)
+                    {
+                        numBox3.Visible = false;
+                        numBox2.Visible = false;
+                        numBox1.Visible = true;
+                        numBox1.Image = Image.FromFile(this.numFolderPath + "\\" + array[0].ToString() + ".png");
+                    }
+
+                    else
+                    {
+                        numBox3.Visible = false;
+                        numBox2.Visible = false;
+                        numBox1.Visible = false;
+                    }
                 }
-                else if (num4 >= 1)
+                else
                 {
+                    kmhBox1.Visible = false;
                     numBox3.Visible = false;
                     numBox2.Visible = false;
-                    numBox1.Image = Image.FromFile(this.numFolderPath + "\\" + array[0].ToString() + ".png");
+                    numBox1.Visible = false;
                 }
 
-                if ((num4 >= 3) && (numfloat > 3))
+
+                if (Form1.CheckBoxSpdFloatStatus == true && Form1.CheckBox1Status == true)
                 {
-                    if (FLarray[3].ToString() == ",")
+                    if ((num4 >= 3) && (numfloat > 3))
                     {
-                        numFloatBox1.Visible = true;
-                        coronBox1.Visible = true;
-                        coronBox1.Image = Image.FromFile(numFolderPath + "\\coron.png");
-                        numFloatBox1.Image = Image.FromFile(numFolderPath + "\\" + FLarray[4].ToString() + ".png");
+                        if (FLarray[3].ToString() == ",")
+                        {
+                            numFloatBox1.Visible = true;
+                            coronBox1.Visible = true;
+                            coronBox1.Image = Image.FromFile(numFolderPath + "\\coron.png");
+                            numFloatBox1.Image = Image.FromFile(numFolderPath + "\\" + FLarray[4].ToString() + ".png");
+                        }
+                        else
+                        {
+                            numFloatBox1.Visible = false;
+                            coronBox1.Visible = false;
+                        }
                     }
+
+                    else if ((num4 >= 2) && (numfloat > 2))
+                    {
+                        if (FLarray[2].ToString() == ",")
+                        {
+                            numFloatBox1.Visible = true;
+                            coronBox1.Visible = true;
+                            coronBox1.Image = Image.FromFile(numFolderPath + "\\coron.png");
+                            numFloatBox1.Image = Image.FromFile(numFolderPath + "\\" + FLarray[3].ToString() + ".png");
+                        }
+                        else
+                        {
+                            numFloatBox1.Visible = false;
+                            coronBox1.Visible = false;
+                        }
+                    }
+
+
+                    else if ((num4 >= 1) && (numfloat > 1))
+                    {
+                        if (FLarray[1].ToString() == ",")
+                        {
+                            numFloatBox1.Visible = true;
+                            coronBox1.Visible = true;
+                            coronBox1.Image = Image.FromFile(numFolderPath + "\\coron.png");
+                            numFloatBox1.Image = Image.FromFile(numFolderPath + "\\" + FLarray[2].ToString() + ".png");
+                        }
+                        else
+                        {
+                            numFloatBox1.Visible = false;
+                            coronBox1.Visible = false;
+                        }
+                    }
+
                     else
                     {
                         numFloatBox1.Visible = false;
                         coronBox1.Visible = false;
                     }
                 }
-
-                else if ((num4 >= 2) && (numfloat > 2))
-                {
-                    if (FLarray[2].ToString() == ",")
-                    {
-                        numFloatBox1.Visible = true;
-                        coronBox1.Visible = true;
-                        coronBox1.Image = Image.FromFile(numFolderPath + "\\coron.png");
-                        numFloatBox1.Image = Image.FromFile(numFolderPath + "\\" + FLarray[3].ToString() + ".png");
-                    }
-                    else
-                    {
-                        numFloatBox1.Visible = false;
-                        coronBox1.Visible = false;
-                    }
-                }
-
-                else if ((num4 >= 1) && (numfloat > 1))
-                {
-                    if (FLarray[1].ToString() == ",")
-                    {
-                        numFloatBox1.Visible = true;
-                        coronBox1.Visible = true;
-                        coronBox1.Image = Image.FromFile(numFolderPath + "\\coron.png");
-                        numFloatBox1.Image = Image.FromFile(numFolderPath + "\\" + FLarray[2].ToString() + ".png");
-                    }
-                    else
-                    {
-                        numFloatBox1.Visible = false;
-                        coronBox1.Visible = false;
-                    }
-                }
-
                 else
                 {
                     numFloatBox1.Visible = false;
