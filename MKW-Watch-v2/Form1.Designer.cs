@@ -37,6 +37,7 @@
             this.chkMT = new System.Windows.Forms.CheckBox();
             this.chkBst = new System.Windows.Forms.CheckBox();
             this.label2 = new System.Windows.Forms.Label();
+            this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // checkBox1
@@ -141,11 +142,24 @@
             this.label2.Text = "====== Speedometer Options ======";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // checkBox2
+            // 
+            this.checkBox2.AutoSize = true;
+            this.checkBox2.Location = new System.Drawing.Point(71, 175);
+            this.checkBox2.Name = "checkBox2";
+            this.checkBox2.Size = new System.Drawing.Size(117, 17);
+            this.checkBox2.TabIndex = 9;
+            this.checkBox2.Text = "Show Input Display";
+            this.checkBox2.UseVisualStyleBackColor = true;
+            this.checkBox2.Visible = false;
+            this.checkBox2.CheckedChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(406, 202);
+            this.ClientSize = new System.Drawing.Size(406, 212);
+            this.Controls.Add(this.checkBox2);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.chkBst);
             this.Controls.Add(this.chkMT);
@@ -158,6 +172,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "Form1";
             this.Text = "SpeeDolphin";
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -173,6 +188,7 @@
         public System.Windows.Forms.CheckBox chkMT;
         public System.Windows.Forms.CheckBox chkBst;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.CheckBox checkBox2;
     }
 }
 

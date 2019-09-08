@@ -28,7 +28,8 @@ namespace MKW_Watch_v2
             InitializeComponent();
 
             SetStyle(ControlStyles.SupportsTransparentBackColor, true);
-            TransparencyKey = BackColor;
+            BackColor = Color.Green;
+            TransparencyKey = Color.Green;
             
         }
 
@@ -36,6 +37,11 @@ namespace MKW_Watch_v2
         ProcessMemoryReader mreader = new ProcessMemoryReader();
 
         int bytesOut = 0;
+        uint MEM2Start = 0x8FFF0000;
+        byte DirectionX;
+        byte DirectionY;
+        byte FaceButon;
+        byte TrickInput;
 
         public void FormOverlay_Load_1(object sender, EventArgs e)
         {
@@ -66,12 +72,170 @@ namespace MKW_Watch_v2
 
         private void FormOverlay_Paint(object sender, PaintEventArgs e)
         {
+
+            byte InvertYAxis(byte x)
+            {
+                if (x >= 15)
+                {
+                    return 0;
+                }
+                else
+                {
+                    return Convert.ToByte(14 - x);
+                }
+            }
+
+            bool AIsPressed(byte x)
+            {
+                if (x == 1 || x == 3 || x == 5 || x == 7 || x == 11)
+                {
+                    return true;
+                }
+                if (x == 0 || x == 2 || x == 4 || x == 6 || x == 8 || x == 10 || x == 14)
+                {
+                    return false;
+                }
+                else return true;
+            }
+
+            bool BIsPressed(byte x)
+            {
+                if (x == 2 || x == 3 || x == 6 || x == 7 || x == 8 || x == 10 || x == 11 || x == 14)
+                {
+                    return true;
+                }
+                if (x == 0 || x == 1 || x == 4 || x == 5)
+                {
+                    return false;
+                }
+                else return true;
+            }
+
+            bool DPADUpPressed(byte x)
+            {
+                if (x == 1)
+                {
+                    return true;
+                }
+                else return false;
+            }
+
+            bool DPADDownPressed(byte x)
+            {
+                if (x == 2)
+                {
+                    return true;
+                }
+                else return false;
+            }
+
+            bool DPADRightPressed(byte x)
+            {
+                if (x == 3)
+                {
+                    return true;
+                }
+                else return false;
+            }
+
+            bool DPADLeftPressed(byte x)
+            {
+                if (x == 4)
+                {
+                    return true;
+                }
+                else return false;
+            }
+
+
+
+            DirectionY = InvertYAxis(DirectionY);
+
+            if (Form1.CheckedInputDisplayStatus == true)
+            {
+                Graphics g = e.Graphics;
+                Pen green = new Pen(Color.DarkTurquoise, 2);
+                Pen red = new Pen(Color.Red, 2);
+                Pen mypen = new Pen(Color.Black, 4);
+                SolidBrush myBrush = new SolidBrush(Color.DarkTurquoise);
+                SolidBrush myPurbleBrush = new SolidBrush(Color.Purple);
+                SolidBrush myRedBrush = new SolidBrush(Color.Red);
+                SolidBrush myGrayBrush = new SolidBrush(Color.LightGray);
+
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+
+                if (AIsPressed(FaceButon) == true)
+                {
+                    g.FillCircle(myBrush, 340, 880, 28);
+                    g.DrawCircle(mypen, 340, 880, 28);
+                }
+
+                if (BIsPressed(FaceButon) == true)
+                {
+                    g.FillCircle(myRedBrush, 300, 920, 14);
+                    g.DrawCircle(mypen, 300, 920, 14);
+
+                }
+
+                g.FillRectangle(new SolidBrush(Color.White), 162, 940, 20, 24);
+                g.FillRectangle(new SolidBrush(Color.White), 162, 980, 20, 24);
+                g.FillRectangle(new SolidBrush(Color.White), 180, 962, 24, 20);
+                g.FillRectangle(new SolidBrush(Color.White), 140, 962, 64, 20);
+                g.FillCircle(new SolidBrush(Color.LightGray), (float)171.5, 972, 6);
+
+                // D-PAD
+                if (DPADUpPressed(TrickInput) == true)
+                {
+                    g.FillRectangle(myRedBrush, 162, 940, 20, 24);
+                }
+                else if (DPADDownPressed(TrickInput) == true)
+                {
+                    g.FillRectangle(myRedBrush, 162, 980, 20, 24);
+                }
+                else if (DPADLeftPressed(TrickInput) == true)
+                {
+                    g.FillRectangle(myRedBrush, 180, 962, 24, 20);
+                }
+                else if (DPADRightPressed(TrickInput) == true)
+                {
+                    g.FillRectangle(myRedBrush, 140, 962, 24, 20);
+                }
+
+                // Y
+                g.DrawLine(mypen, 140, 962, 140, 982);
+                g.DrawLine(mypen, 204, 962, 204, 982);
+
+                g.DrawLine(mypen, 162, 940, 162, 962);
+                g.DrawLine(mypen, 182, 940, 182, 962);
+
+                g.DrawLine(mypen, 162, 1004, 162, 984);
+                g.DrawLine(mypen, 182, 1004, 182, 984);
+
+                // X
+                g.DrawLine(mypen, 162, 940, 182, 940);
+                g.DrawLine(mypen, 162, 1004, 182, 1004);
+
+                g.DrawLine(mypen, 140, 962, 164, 962);
+                g.DrawLine(mypen, 140, 982, 164, 982);
+
+                g.DrawLine(mypen, 205, 962, 180, 962);
+                g.DrawLine(mypen, 205, 982, 180, 982);
+
+
+                //Analog stick
+                g.DrawCircle(mypen, 100, 880, 42);
+                g.FillCircle(myPurbleBrush, 100, 880, 41);
+                g.DrawCircle(mypen, 58 + (DirectionX * 6), 838 + (DirectionY * 6), 17);
+                g.FillCircle(myGrayBrush, 58 + (DirectionX * 6), 838 + (DirectionY * 6), 16);
+            }
+
         }
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-
+            Invalidate();
             uint PlayerBase;
+            uint MEM2InputPointer;
 
             // Game ID
             long GameID = BitConverter.ToInt64(mreader.ReadMemory((IntPtr)(0x7FFF0000), 8, out bytesOut), 0);
@@ -84,31 +248,49 @@ namespace MKW_Watch_v2
             if (GameIDString == "RMCE01\0\0")
             {
                 PlayerBase = 0x9BD110;
+                MEM2InputPointer = 0x429FA4;
             }
             else if (GameIDString == "RMCP01\0\0")
             {
                 PlayerBase = 0x9C18F8;
+                MEM2InputPointer = 0x42E324;
             }
             else if (GameIDString == "RMCJ01\0\0")
             {
                 PlayerBase = 0x9C0958;
+                MEM2InputPointer = 0x42DC14;
             }
             else if (GameIDString == "RMCK01\0\0")
             {
                 PlayerBase = 0x9AFF38;
+                MEM2InputPointer = 0x41C2B4;
             }
             else
             {
                 PlayerBase = 0;
+                MEM2InputPointer = 0;
             }
+
 
             int screenX = Screen.PrimaryScreen.Bounds.Width;
             int screenY = Screen.PrimaryScreen.Bounds.Height;
 
             bool checkIfInRace;
+
+            uint MEM2InputAddress = BitConverter.ToUInt32(mreader.ReadMemory((IntPtr)(0x7FFF0000 + MEM2InputPointer), 4, out bytesOut), 0);
+            byte[] offsetbytes = BitConverter.GetBytes(MEM2InputAddress);
+            Array.Reverse(offsetbytes, 0, offsetbytes.Length);
+            MEM2InputAddress = BitConverter.ToUInt32(offsetbytes, 0);
+
+            byte[] Inputs = mreader.ReadMemory((IntPtr)(0x8FFF0000 + (MEM2InputAddress - 0x90000000) + 0x2840), 0xF, out bytesOut);
+            FaceButon = Inputs[1];
+            DirectionX = Inputs[0xC];
+            DirectionY = Inputs[0xD];
+            TrickInput = Inputs[0xE];
+
             // PlayerBase
             uint PlayerBaseOffset = BitConverter.ToUInt32(mreader.ReadMemory((IntPtr)(0x7FFF0000 + PlayerBase), 4, out bytesOut), 0);
-            byte[] offsetbytes = BitConverter.GetBytes(PlayerBaseOffset);
+            offsetbytes = BitConverter.GetBytes(PlayerBaseOffset);
             Array.Reverse(offsetbytes, 0, offsetbytes.Length);
             PlayerBaseOffset = BitConverter.ToUInt32(offsetbytes, 0);
 
@@ -207,6 +389,10 @@ namespace MKW_Watch_v2
             offsetbytes = BitConverter.GetBytes(num);
             Array.Reverse(offsetbytes);
             num = BitConverter.ToSingle(offsetbytes, 0);
+            if (Form1.CheckBoxSpdFloatStatus == false)
+            {
+                num = (float)Math.Round(num);
+            }
             char[] FLarray = num.ToString().ToCharArray();
             int numfloat = FLarray.Length;            
 
@@ -586,5 +772,22 @@ namespace MKW_Watch_v2
             }
         }
         private string numFolderPath = Directory.GetCurrentDirectory() + "\\Font";
+    }
+
+    public static class GraphicsExtensions
+    {
+        public static void DrawCircle(this Graphics g, Pen pen,
+                                      float centerX, float centerY, float radius)
+        {
+            g.DrawEllipse(pen, centerX - radius, centerY - radius,
+                          radius + radius, radius + radius);
+        }
+
+        public static void FillCircle(this Graphics g, Brush brush,
+                                      float centerX, float centerY, float radius)
+        {
+            g.FillEllipse(brush, centerX - radius, centerY - radius,
+                          radius + radius, radius + radius);
+        }
     }
 }

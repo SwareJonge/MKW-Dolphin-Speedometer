@@ -239,6 +239,7 @@
             this.Controls.Add(this.numBox2);
             this.Controls.Add(this.numBox1);
             this.Controls.Add(this.coronBox1);
+            this.DoubleBuffered = true;
             this.Name = "FormOverlay";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Form2";
