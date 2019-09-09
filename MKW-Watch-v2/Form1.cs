@@ -8,14 +8,6 @@ namespace MKW_Watch_v2
     
     public partial class Form1 : Form
     {
-        bool GetHookType(int x)
-        {
-            if (x == 0)
-            {
-                return false;
-            }
-            else return true;
-        }
 
         FormOverlay frm = new FormOverlay();
         public Form1()
@@ -30,8 +22,14 @@ namespace MKW_Watch_v2
             chkBst.CheckedChanged += new EventHandler(chkMT_CheckedChanged);
             checkBox2.CheckedChanged += new EventHandler(checkBox2_CheckedChanged);
 
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
             Process[] processesByName = Process.GetProcessesByName("Dolphin");
-            if (GetHookType(processesByName.Length) == false)
+
+            if (processesByName.Length == 0)
             {
                 btnConnect.Text = "Connect To Dolphin";
                 frm.Hide();
@@ -57,12 +55,6 @@ namespace MKW_Watch_v2
             }
 
 
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-
-            Process[] processesByName = Process.GetProcessesByName("Dolphin");
             if (processesByName.Length == 0)
             {
                 return;
@@ -78,28 +70,6 @@ namespace MKW_Watch_v2
                 }
             }
 
-            if (GetHookType(processesByName.Length) == false)
-            {
-                btnConnect.Text = "Connect To Dolphin";
-                frm.Hide();
-                checkBox1.Hide();
-                checkBox2.Hide();
-                chkSpdFloat1.Hide();
-                chkAir.Hide();
-                chkMT.Hide();
-                chkBst.Hide();
-                lblStatus.Text = "Not Connected";
-                lblStatus.ForeColor = Color.Red;
-            }
-
-            frm.Show();            
-            checkBox1.Show();
-            checkBox2.Show();
-            chkAir.Show();
-            chkMT.Show();
-            chkBst.Show();
-            lblStatus.Text = "Connected";
-            lblStatus.ForeColor = Color.Green;
         }
 
 
@@ -155,7 +125,31 @@ namespace MKW_Watch_v2
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
+            Process[] processesByName = Process.GetProcessesByName("Dolphin");
+            if (processesByName.Length == 0)
+            {
+                btnConnect.Text = "Connect To Dolphin";
+                frm.Hide();
+                checkBox1.Hide();
+                checkBox2.Hide();
+                chkSpdFloat1.Hide();
+                chkAir.Hide();
+                chkMT.Hide();
+                chkBst.Hide();
+                lblStatus.Text = "Not Connected";
+                lblStatus.ForeColor = Color.Red;
+            }
+            else
+            {
+                frm.Show();
+                checkBox1.Show();
+                checkBox2.Show();
+                chkAir.Show();
+                chkMT.Show();
+                chkBst.Show();
+                lblStatus.Text = "Connected";
+                lblStatus.ForeColor = Color.Green;
+            }
         }
     }
 }
