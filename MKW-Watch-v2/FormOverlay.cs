@@ -11,7 +11,7 @@ using MKW_Watch_v2;
 
 namespace MKW_Watch_v2
 {
-       
+
     public partial class FormOverlay : Form
     {
 
@@ -30,23 +30,19 @@ namespace MKW_Watch_v2
             SetStyle(ControlStyles.SupportsTransparentBackColor, true);
             BackColor = Color.Green;
             TransparencyKey = Color.Green;
-            
         }
 
-        
         ProcessMemoryReader mreader = new ProcessMemoryReader();
 
         int bytesOut = 0;
         uint MEM2Start = 0x8FFF0000;
         byte DirectionX;
         byte DirectionY;
-        byte FaceButon;
+        byte FaceButton;
         byte TrickInput;
 
         public void FormOverlay_Load_1(object sender, EventArgs e)
         {
-
-            
             TopMost = true;
 
             Timer timer1 = new Timer();
@@ -69,86 +65,16 @@ namespace MKW_Watch_v2
 
         }
 
+        byte InvertYAxis(byte x)
+        {
+            if (x >= 15) // this should never happen but just for safety
+                return 0;
+            else
+                return Convert.ToByte(14 - x);
+        }
 
         private void FormOverlay_Paint(object sender, PaintEventArgs e)
         {
-
-            byte InvertYAxis(byte x)
-            {
-                if (x >= 15)
-                {
-                    return 0;
-                }
-                else
-                {
-                    return Convert.ToByte(14 - x);
-                }
-            }
-
-            bool AIsPressed(byte x)
-            {
-                if (x == 1 || x == 3 || x == 5 || x == 7 || x == 11)
-                {
-                    return true;
-                }
-                if (x == 0 || x == 2 || x == 4 || x == 6 || x == 8 || x == 10 || x == 14)
-                {
-                    return false;
-                }
-                else return true;
-            }
-
-            bool BIsPressed(byte x)
-            {
-                if (x == 2 || x == 3 || x == 6 || x == 7 || x == 8 || x == 10 || x == 11 || x == 14)
-                {
-                    return true;
-                }
-                if (x == 0 || x == 1 || x == 4 || x == 5)
-                {
-                    return false;
-                }
-                else return true;
-            }
-
-            bool DPADUpPressed(byte x)
-            {
-                if (x == 1)
-                {
-                    return true;
-                }
-                else return false;
-            }
-
-            bool DPADDownPressed(byte x)
-            {
-                if (x == 2)
-                {
-                    return true;
-                }
-                else return false;
-            }
-
-            bool DPADRightPressed(byte x)
-            {
-                if (x == 3)
-                {
-                    return true;
-                }
-                else return false;
-            }
-
-            bool DPADLeftPressed(byte x)
-            {
-                if (x == 4)
-                {
-                    return true;
-                }
-                else return false;
-            }
-
-
-
             DirectionY = InvertYAxis(DirectionY);
 
             if (Form1.CheckedInputDisplayStatus == true)
@@ -164,17 +90,16 @@ namespace MKW_Watch_v2
 
                 g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 
-                if (AIsPressed(FaceButon) == true)
+                if ((FaceButton & 1) != 0) // A
                 {
                     g.FillCircle(myBrush, 340, 880, 28);
                     g.DrawCircle(mypen, 340, 880, 28);
                 }
 
-                if (BIsPressed(FaceButon) == true)
+                if ((FaceButton & 2) != 0) // B
                 {
                     g.FillCircle(myRedBrush, 300, 920, 14);
                     g.DrawCircle(mypen, 300, 920, 14);
-
                 }
 
                 g.FillRectangle(new SolidBrush(Color.White), 162, 940, 20, 24);
@@ -184,22 +109,14 @@ namespace MKW_Watch_v2
                 g.FillCircle(new SolidBrush(Color.LightGray), (float)171.5, 972, 6);
 
                 // D-PAD
-                if (DPADUpPressed(TrickInput) == true)
-                {
+                if (TrickInput == 1) // Up
                     g.FillRectangle(myRedBrush, 162, 940, 20, 24);
-                }
-                else if (DPADDownPressed(TrickInput) == true)
-                {
+                else if (TrickInput == 2) // Down
                     g.FillRectangle(myRedBrush, 162, 980, 20, 24);
-                }
-                else if (DPADLeftPressed(TrickInput) == true)
-                {
-                    g.FillRectangle(myRedBrush, 180, 962, 24, 20);
-                }
-                else if (DPADRightPressed(TrickInput) == true)
-                {
+                else if (TrickInput == 3) // Right
                     g.FillRectangle(myRedBrush, 140, 962, 24, 20);
-                }
+                else if (TrickInput == 4) // Left
+                    g.FillRectangle(myRedBrush, 180, 962, 24, 20);
 
                 // Y
                 g.DrawLine(mypen, 140, 962, 140, 982);
@@ -220,7 +137,6 @@ namespace MKW_Watch_v2
 
                 g.DrawLine(mypen, 205, 962, 180, 962);
                 g.DrawLine(mypen, 205, 982, 180, 982);
-
 
                 //Analog stick
                 g.DrawCircle(mypen, 100, 880, 42);
@@ -271,7 +187,6 @@ namespace MKW_Watch_v2
                 MEM2InputPointer = 0;
             }
 
-
             int screenX = Screen.PrimaryScreen.Bounds.Width;
             int screenY = Screen.PrimaryScreen.Bounds.Height;
 
@@ -283,7 +198,7 @@ namespace MKW_Watch_v2
             MEM2InputAddress = BitConverter.ToUInt32(offsetbytes, 0);
 
             byte[] Inputs = mreader.ReadMemory((IntPtr)(0x8FFF0000 + (MEM2InputAddress - 0x90000000) + 0x2840), 0xF, out bytesOut);
-            FaceButon = Inputs[1];
+            FaceButton = Inputs[1];
             DirectionX = Inputs[0xC];
             DirectionY = Inputs[0xD];
             TrickInput = Inputs[0xE];
@@ -294,15 +209,7 @@ namespace MKW_Watch_v2
             Array.Reverse(offsetbytes, 0, offsetbytes.Length);
             PlayerBaseOffset = BitConverter.ToUInt32(offsetbytes, 0);
 
-            if (PlayerBaseOffset != 0)
-            {
-                checkIfInRace = true;
-            }
-
-            else
-            {
-                checkIfInRace = false;
-            }
+            checkIfInRace = PlayerBaseOffset != 0;
 
             // offset 1
             PlayerBaseOffset = BitConverter.ToUInt32(mreader.ReadMemory((IntPtr)(0x7FFF0000 + (PlayerBaseOffset - 0x80000000) + 0x20), 4, out bytesOut), 0);
@@ -361,7 +268,6 @@ namespace MKW_Watch_v2
             char[] arrayAll_MT = All_MT.ToString().ToCharArray();
             int MT = arrayAll_MT.Length;
 
-
             // Boost
             short Trick_Boost = BitConverter.ToInt16(mreader.ReadMemory((IntPtr)(0x7FFF0000 + (PlayerBaseOffset - 0x80000000) + 0x114), 4, out bytesOut), 0);
             offsetbytes = BitConverter.GetBytes(Trick_Boost);
@@ -390,11 +296,10 @@ namespace MKW_Watch_v2
             Array.Reverse(offsetbytes);
             num = BitConverter.ToSingle(offsetbytes, 0);
             if (Form1.CheckBoxSpdFloatStatus == false)
-            {
                 num = (float)Math.Round(num);
-            }
+
             char[] FLarray = num.ToString().ToCharArray();
-            int numfloat = FLarray.Length;            
+            int numfloat = FLarray.Length;
 
             int num3 = (int)num;
             char[] array = num3.ToString().ToCharArray();
@@ -410,7 +315,7 @@ namespace MKW_Watch_v2
 
 
             kmhBox1.Location = new Point(screenX4, screenY4);
-            kmhBox1.ImageLocation = @"Icons\KMH.png";            
+            kmhBox1.ImageLocation = @"Icons\KMH.png";
             kmhBox1.SendToBack();
 
             kmhBox1.Width = (int)Math.Round(screenX * 0.0744791666666667);
@@ -421,7 +326,7 @@ namespace MKW_Watch_v2
 
             // Air Meter Location            
 
-            airTextureBox1.ImageLocation = @"Icons\Air.png";            
+            airTextureBox1.ImageLocation = @"Icons\Air.png";
             airTextureBox1.SendToBack();
 
             airTextureBox1.Location = new Point((int)Math.Round(screenX * 0.8098958333333333), screenY6);
@@ -450,7 +355,7 @@ namespace MKW_Watch_v2
             // MT Meter Location            
 
             mtTextureBox1.ImageLocation = @"Icons\MT.png";
-            
+
             mtTextureBox1.SendToBack();
 
             mtTextureBox1.Location = new Point((int)Math.Round(screenX * 0.8098958333333333), screenY5);
@@ -478,7 +383,7 @@ namespace MKW_Watch_v2
 
             // Boost Meter Location
 
-            boostTextureBox1.ImageLocation = @"Icons\Boost.png";            
+            boostTextureBox1.ImageLocation = @"Icons\Boost.png";
             boostTextureBox1.SendToBack();
 
             boostTextureBox1.Location = new Point((int)Math.Round(screenX * 0.8098958333333333), screenY3);
@@ -525,7 +430,7 @@ namespace MKW_Watch_v2
             numBox2.Height = (int)Math.Round(screenY * 0.0592592592592593);
             numBox1.Height = (int)Math.Round(screenY * 0.0592592592592593);
             numFloatBox1.Height = (int)Math.Round(screenY * 0.0592592592592593);
-            
+
             numBox3.SizeMode = PictureBoxSizeMode.Zoom;
             numBox2.SizeMode = PictureBoxSizeMode.Zoom;
             numBox1.SizeMode = PictureBoxSizeMode.Zoom;
